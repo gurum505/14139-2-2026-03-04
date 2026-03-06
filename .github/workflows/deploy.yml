@@ -117,6 +117,7 @@ jobs:
       - name: Deploy via SSM
         env:
           IMAGE: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.IMAGE_NAME }}:latest
+          INSTANCE_ID: ${{ secrets.AWS_INSTANCE_ID }}
         run: |
           SCRIPT=$(cat <<DEPLOY
           docker pull $IMAGE
@@ -127,7 +128,6 @@ jobs:
           DEPLOY
           )
 
-          INSTANCE_ID="i-0614933ee1c5a22f0"
           PARAMS=$(jq -n --arg cmd "$SCRIPT" '{"commands":[$cmd]}')
 
           COMMAND_ID=$(aws ssm send-command \
